@@ -11,7 +11,7 @@ export class GoogleMapsService {
   constructor(private http: HttpClient) {}
 
   getDirections(origin: string, destination: string): Observable<any> {
-    const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&key=${this.apiKey}`;
+    const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&travelMode=DRIVE&avoid=ferries&polylineQuality=HIGH_QUALITY&key=${this.apiKey}`;
     return this.http.get(url);
   }
 

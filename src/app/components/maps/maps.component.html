@@ -1,3 +1,19 @@
 <h1>{{ title }}</h1>
+
+<form [formGroup]="mapsInput">
+  <mat-form-field>
+    <input matInput placeholder="Start" formControlName="origin">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput placeholder="Destination" formControlName="destination">
+  </mat-form-field>
+
+  <button color="primary" (click)="search()">Get Direction</button>
+</form>
+
+<h1>{{mapsInput.value['origin']}}</h1>
+<h1>{{mapsInput.value['destination']}}</h1>
+
 <div>{{places.length}}</div>
 <div id="map"></div>

@@ -3,6 +3,7 @@
 import { Component } from '@angular/core';
 import { GoogleMapsService } from '../../service/google-maps.service';
 import { decodePolyline } from '../../utils/polyline';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-maps',
@@ -11,8 +12,11 @@ import { decodePolyline } from '../../utils/polyline';
 })
 export class MapsComponent {
   title = 'Maps';
-  origin = 'CN Tower, Toronto, ON, Canada';
-  destination = 'UBC, Vancouver, BC, Canada';
+
+  mapsInput: FormGroup = new FormGroup({
+    origin: new FormControl(''),
+    destination: new FormControl(''),
+  });
   places: any[] = [];
   map: google.maps.Map | undefined;
 
@@ -20,6 +24,10 @@ export class MapsComponent {
 
   ngAfterViewInit(): void {
     this.initMap();
+    this.loadDirectionsAndPlaces();
+  }
+
+  search(): void {
     this.loadDirectionsAndPlaces();
   }
 
@@ -36,7 +44,10 @@ export class MapsComponent {
 
   loadDirectionsAndPlaces(): void {
     this.googleMapsService
-      .getDirections(this.origin, this.destination)
+      .getDirections(
+        this.mapsInput.value['origin'],
+        this.mapsInput.value['destination']
+      )
       .subscribe((response: any) => {
         const polyline = response.routes[0].overview_polyline.points;
         const routePoints = decodePolyline(polyline);
