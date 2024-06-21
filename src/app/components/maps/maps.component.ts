@@ -24,7 +24,6 @@ export class MapsComponent {
 
   ngAfterViewInit(): void {
     this.initMap();
-    this.loadDirectionsAndPlaces();
   }
 
   search(): void {
@@ -44,7 +43,7 @@ export class MapsComponent {
 
   loadDirectionsAndPlaces(): void {
     this.googleMapsService
-      .getDirections(
+      .getTestDirections(
         this.mapsInput.value['origin'],
         this.mapsInput.value['destination']
       )
@@ -63,22 +62,26 @@ export class MapsComponent {
 
         if (this.map) routePath.setMap(this.map);
 
+        let i = 0;
         routePoints.forEach(([lat, lng]) => {
-          this.googleMapsService
-            .getPlacesNearby(lat, lng, 'gas_station')
-            .subscribe((placesResponse: any) => {
-              this.places.push(...placesResponse.results);
-              placesResponse.results.forEach((place: any) => {
-                new google.maps.Marker({
-                  position: {
-                    lat: place.geometry.location.lat,
-                    lng: place.geometry.location.lng,
-                  },
-                  map: this.map,
-                  title: place.name,
+          if (i % 100000 == 0) {
+            this.googleMapsService
+              .getPlacesNearby(lat, lng, 1, 500, 1420)
+              .subscribe((placesResponse: any) => {
+                this.places.push(...placesResponse.results);
+                placesResponse.results.forEach((place: any) => {
+                  new google.maps.Marker({
+                    position: {
+                      lat: place.geometry.location.lat,
+                      lng: place.geometry.location.lng,
+                    },
+                    map: this.map,
+                    title: place.name,
+                  });
                 });
               });
-            });
+            i++;
+          }
         });
       });
   }
